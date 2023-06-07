@@ -1,4 +1,4 @@
-package com.example.akfk_fitorf.ui.home
+package com.example.akfk_fitorf.ui.fts
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -1,4 +1,4 @@
-package com.example.akfk_fitorf.ui.home
+package com.example.akfk_fitorf.ui.fts
 
 import android.os.Bundle
 import android.util.Log
@@ -8,10 +8,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.example.akfk_fitorf.R
-import com.example.akfk_fitorf.databinding.FragmentHomeBinding
-import com.google.gson.GsonBuilder
+import com.example.akfk_fitorf.databinding.FragmentFtsBinding
 import com.google.gson.JsonParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -25,9 +22,9 @@ import java.util.Calendar
 //import kotlinx.android.synthetic.main.activity_main.*
 //import kotlinx.android.synthetic.main.fragment_home.editTextDate
 
-class HomeFragment : Fragment() {
+class FtsFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentFtsBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -38,7 +35,7 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentFtsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val c = Calendar.getInstance()
