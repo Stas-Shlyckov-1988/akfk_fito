@@ -1,4 +1,4 @@
-package com.example.akfk_fitorf.ui.gallery
+package com.example.akfk_fitorf.ui.material
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
