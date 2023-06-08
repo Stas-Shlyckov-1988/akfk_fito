@@ -1,15 +1,18 @@
 package com.example.akfk_fitorf.ui.material
 
 import android.R
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.example.akfk_fitorf.databinding.FragmentMaterialBinding
 import com.google.gson.JsonParser
@@ -30,6 +33,7 @@ class MaterialFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    @RequiresApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,34 +55,41 @@ class MaterialFragment : Fragment() {
         val dateTo : EditText = binding.editTextDate4
         dateTo.setText(date_to)
 
-        val dataItems = arrayListOf<String>()
         val materialList: ListView = binding.materialList
-        GlobalScope.launch(Dispatchers.IO) {
-            val url = URL("https://akfk.fitorf.ru/api/obrashchenie_insp?sort=&date_from=" + date_from + "&date_to=" + date_to + "&page=1")
-            val httpURLConnection = url.openConnection() as HttpURLConnection
-            httpURLConnection.setRequestProperty("Accept", "application/json") // The format of response we want to get from the server
-            httpURLConnection.requestMethod = "GET"
-            httpURLConnection.doInput = true
-            httpURLConnection.doOutput = false
-            // Check if the connection is successful
-            val responseCode = httpURLConnection.responseCode
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                val response = httpURLConnection.inputStream.bufferedReader()
-                    .use { it.readText() }  // defaults to UTF-8
-                withContext(Dispatchers.Main) {
+        val pageBtn: Button = binding.nextBtn
+        var step: Int = 1
+        pageBtn.setOnClickListener {
+            val dataItems = arrayListOf<String>()
+            GlobalScope.launch(Dispatchers.IO) {
 
-                    val prettyJson = JsonParser.parseString(response)
-                    for (obj in prettyJson.asJsonArray) {
-                        dataItems.add(obj.asJsonObject.get("pitomnik").toString())
+                val url = URL("https://akfk.fitorf.ru/api/obrashchenie_insp?sort=&date_from=" + dateFrom.text + "&date_to=" + dateTo.text + "&page=" + step)
+                val httpURLConnection = url.openConnection() as HttpURLConnection
+                httpURLConnection.setRequestProperty("Accept", "application/json") // The format of response we want to get from the server
+                httpURLConnection.requestMethod = "GET"
+                httpURLConnection.doInput = true
+                httpURLConnection.doOutput = false
+                // Check if the connection is successful
+                val responseCode = httpURLConnection.responseCode
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    val response = httpURLConnection.inputStream.bufferedReader()
+                        .use { it.readText() }  // defaults to UTF-8
+                    withContext(Dispatchers.Main) {
+
+                        val prettyJson = JsonParser.parseString(response)
+                        for (obj in prettyJson.asJsonArray) {
+                            dataItems.add(obj.asJsonObject.get("pitomnik").toString())
+                        }
+                        val adapter = ArrayAdapter(requireActivity(), R.layout.simple_list_item_1, dataItems)
+                        materialList.adapter = adapter
+
                     }
-                    val adapter = ArrayAdapter(requireActivity(), R.layout.simple_list_item_1, dataItems)
-                    materialList.adapter = adapter
-
+                } else {
+                    Log.e("HTTPURLCONNECTION_ERROR", responseCode.toString())
                 }
-            } else {
-                Log.e("HTTPURLCONNECTION_ERROR", responseCode.toString())
+                step++
             }
         }
+        pageBtn.callOnClick()
 
         return root
     }

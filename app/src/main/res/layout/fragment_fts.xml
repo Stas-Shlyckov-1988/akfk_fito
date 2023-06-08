@@ -10,32 +10,42 @@
         android:id="@+id/editTextDate"
         android:layout_width="162dp"
         android:layout_height="39dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="date"
         app:layout_constraintEnd_toStartOf="@+id/editTextDate2"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.05" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/editTextDate2"
         android:layout_width="155dp"
         android:layout_height="36dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="date"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/editTextDate"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.059" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@+id/ftsList"
-        android:layout_width="409dp"
-        android:layout_height="560dp"
+        android:layout_width="408dp"
+        android:layout_height="466dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextDate"
-        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintVertical_bias="0.228"
         tools:layout_editor_absoluteX="1dp" />
+
+    <Button
+        android:id="@+id/pageBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Далее"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ftsList"
+        app:layout_constraintVertical_bias="0.552"
+        tools:layout_editor_absoluteX="32dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

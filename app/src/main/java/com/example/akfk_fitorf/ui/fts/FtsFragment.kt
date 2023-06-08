@@ -1,14 +1,17 @@
 package com.example.akfk_fitorf.ui.fts
 
 import android.R
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.example.akfk_fitorf.databinding.FragmentFtsBinding
 import com.google.gson.JsonParser
@@ -29,6 +32,7 @@ class FtsFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    @RequiresApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,34 +54,41 @@ class FtsFragment : Fragment() {
         val dateTo : EditText = binding.editTextDate2
         dateTo.setText(date_to)
 
-        val dataItems = arrayListOf<String>()
         var mListView: ListView = binding.ftsList
-        GlobalScope.launch(Dispatchers.IO) {
-            val url = URL("https://akfk.fitorf.ru/api/fts?date_from=" + date_from + "&date_to=" + date_to)
-            val httpURLConnection = url.openConnection() as HttpURLConnection
-            httpURLConnection.setRequestProperty("Accept", "application/json") // The format of response we want to get from the server
-            httpURLConnection.requestMethod = "GET"
-            httpURLConnection.doInput = true
-            httpURLConnection.doOutput = false
-            // Check if the connection is successful
-            val responseCode = httpURLConnection.responseCode
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                val response = httpURLConnection.inputStream.bufferedReader()
-                    .use { it.readText() }  // defaults to UTF-8
-                withContext(Dispatchers.Main) {
+        var page: Button = binding.pageBtn
+        var step: Int = 1
+        page.setOnClickListener {
+            val dataItems = arrayListOf<String>()
+            GlobalScope.launch(Dispatchers.IO) {
+                val url = URL("https://akfk.fitorf.ru/api/fts?date_from=" + dateFrom.text + "&date_to=" + dateTo.text + "&page=" + step)
+                val httpURLConnection = url.openConnection() as HttpURLConnection
+                httpURLConnection.setRequestProperty("Accept", "application/json") // The format of response we want to get from the server
+                httpURLConnection.requestMethod = "GET"
+                httpURLConnection.doInput = true
+                httpURLConnection.doOutput = false
+                // Check if the connection is successful
+                val responseCode = httpURLConnection.responseCode
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    val response = httpURLConnection.inputStream.bufferedReader()
+                        .use { it.readText() }  // defaults to UTF-8
+                    withContext(Dispatchers.Main) {
 
-                    val prettyJson = JsonParser.parseString(response)
-                    for (obj in prettyJson.asJsonArray) {
-                        dataItems.add(obj.asJsonObject.get("akt_num").toString())
+                        val prettyJson = JsonParser.parseString(response)
+                        for (obj in prettyJson.asJsonArray) {
+                            dataItems.add(obj.asJsonObject.get("akt_num").toString())
+                        }
+                        val adapter = ArrayAdapter(requireActivity(), R.layout.simple_list_item_1, dataItems)
+                        mListView.adapter = adapter
+
                     }
-                    val adapter = ArrayAdapter(requireActivity(), R.layout.simple_list_item_1, dataItems)
-                    mListView.adapter = adapter
-
+                } else {
+                    Log.e("HTTPURLCONNECTION_ERROR", responseCode.toString())
                 }
-            } else {
-                Log.e("HTTPURLCONNECTION_ERROR", responseCode.toString())
+                step++
             }
+
         }
+        page.callOnClick()
 
         return root
     }
