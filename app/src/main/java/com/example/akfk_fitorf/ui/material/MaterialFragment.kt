@@ -1,11 +1,14 @@
 package com.example.akfk_fitorf.ui.material
 
+import android.R
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.ListView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.akfk_fitorf.databinding.FragmentMaterialBinding
@@ -48,7 +51,8 @@ class MaterialFragment : Fragment() {
         val dateTo : EditText = binding.editTextDate4
         dateTo.setText(date_to)
 
-        val textView: TextView = binding.textGallery
+        val dataItems = arrayListOf<String>()
+        val materialList: ListView = binding.materialList
         GlobalScope.launch(Dispatchers.IO) {
             val url = URL("https://akfk.fitorf.ru/api/obrashchenie_insp?sort=&date_from=" + date_from + "&date_to=" + date_to + "&page=1")
             val httpURLConnection = url.openConnection() as HttpURLConnection
@@ -63,19 +67,12 @@ class MaterialFragment : Fragment() {
                     .use { it.readText() }  // defaults to UTF-8
                 withContext(Dispatchers.Main) {
 
-                    var dataText: String = ""
                     val prettyJson = JsonParser.parseString(response)
-
                     for (obj in prettyJson.asJsonArray) {
-                        dataText += "pitomnik: "
-                        dataText += obj.asJsonObject.get("pitomnik")
-                        dataText += "\n"
-
-                        dataText += "data doc: "
-                        dataText += obj.asJsonObject.get("data_doc")
-                        dataText += "\n\n"
+                        dataItems.add(obj.asJsonObject.get("pitomnik").toString())
                     }
-                    textView.text = dataText
+                    val adapter = ArrayAdapter(requireActivity(), R.layout.simple_list_item_1, dataItems)
+                    materialList.adapter = adapter
 
                 }
             } else {
