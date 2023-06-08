@@ -61,7 +61,6 @@ class MaterialFragment : Fragment() {
         pageBtn.setOnClickListener {
             val dataItems = arrayListOf<String>()
             GlobalScope.launch(Dispatchers.IO) {
-
                 val url = URL("https://akfk.fitorf.ru/api/obrashchenie_insp?sort=&date_from=" + dateFrom.text + "&date_to=" + dateTo.text + "&page=" + step)
                 val httpURLConnection = url.openConnection() as HttpURLConnection
                 httpURLConnection.setRequestProperty("Accept", "application/json") // The format of response we want to get from the server
@@ -87,6 +86,9 @@ class MaterialFragment : Fragment() {
                     Log.e("HTTPURLCONNECTION_ERROR", responseCode.toString())
                 }
                 step++
+                if (dataItems.size == 0) {
+                    pageBtn.visibility = View.INVISIBLE
+                }
             }
         }
         pageBtn.callOnClick()
