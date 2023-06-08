@@ -1,12 +1,14 @@
 package com.example.akfk_fitorf.ui.fts
 
+import android.R
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.EditText
-import android.widget.TextView
+import android.widget.ListView
 import androidx.fragment.app.Fragment
 import com.example.akfk_fitorf.databinding.FragmentFtsBinding
 import com.google.gson.JsonParser
@@ -18,9 +20,6 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Calendar
-
-//import kotlinx.android.synthetic.main.activity_main.*
-//import kotlinx.android.synthetic.main.fragment_home.editTextDate
 
 class FtsFragment : Fragment() {
 
@@ -51,7 +50,8 @@ class FtsFragment : Fragment() {
         val dateTo : EditText = binding.editTextDate2
         dateTo.setText(date_to)
 
-        val textView: TextView = binding.textHome
+        val dataItems = arrayListOf<String>()
+        var mListView: ListView = binding.ftsList
         GlobalScope.launch(Dispatchers.IO) {
             val url = URL("https://akfk.fitorf.ru/api/fts?date_from=" + date_from + "&date_to=" + date_to)
             val httpURLConnection = url.openConnection() as HttpURLConnection
@@ -66,29 +66,19 @@ class FtsFragment : Fragment() {
                     .use { it.readText() }  // defaults to UTF-8
                 withContext(Dispatchers.Main) {
 
-                    var dataText: String = ""
                     val prettyJson = JsonParser.parseString(response)
-
                     for (obj in prettyJson.asJsonArray) {
-                        dataText += "akt num: "
-                        dataText += obj.asJsonObject.get("akt_num")
-                        dataText += "\n"
-
-                        dataText += "cert date: "
-                        dataText += obj.asJsonObject.get("cert_date")
-                        dataText += "\n"
-
-                        dataText += "fts: "
-                        dataText += obj.asJsonObject.get("fts")
-                        dataText += "\n\n"
+                        dataItems.add(obj.asJsonObject.get("akt_num").toString())
                     }
-                    textView.text = dataText
+                    val adapter = ArrayAdapter(requireActivity(), R.layout.simple_list_item_1, dataItems)
+                    mListView.adapter = adapter
 
                 }
             } else {
                 Log.e("HTTPURLCONNECTION_ERROR", responseCode.toString())
             }
         }
+
         return root
     }
 
