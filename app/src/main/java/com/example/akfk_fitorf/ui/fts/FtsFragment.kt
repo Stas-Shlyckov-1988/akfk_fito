@@ -85,7 +85,7 @@ class FtsFragment : Fragment() {
                     Log.e("HTTPURLCONNECTION_ERROR", responseCode.toString())
                 }
                 step++
-                if (dataItems.size == 0) {
+                if (dataItems.size < 10) {
                     page.visibility = View.INVISIBLE
                 }
             }
