@@ -85,9 +85,11 @@ class MaterialFragment : Fragment() {
                 } else {
                     Log.e("HTTPURLCONNECTION_ERROR", responseCode.toString())
                 }
-                step++
                 if (dataItems.size < 10) {
-                    pageBtn.visibility = View.INVISIBLE
+                    step = 1
+                }
+                else {
+                    step++
                 }
             }
         }
