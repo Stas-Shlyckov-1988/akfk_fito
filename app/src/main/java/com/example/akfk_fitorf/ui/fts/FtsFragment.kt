@@ -80,6 +80,11 @@ class FtsFragment : Fragment() {
                         val adapter = ArrayAdapter(requireActivity(), R.layout.simple_list_item_1, dataItems)
                         mListView.adapter = adapter
 
+                        mListView.setOnItemClickListener { parent, view, position, id ->
+
+                           println(prettyJson.asJsonArray[id.toInt()])
+                        }
+
                     }
                 } else {
                     Log.e("HTTPURLCONNECTION_ERROR", responseCode.toString())
