@@ -30,6 +30,13 @@
         app:layout_constraintStart_toEndOf="@+id/editTextDate"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:visibility="invisible" />
+
     <ListView
         android:id="@+id/ftsList"
         android:layout_width="408dp"
@@ -37,7 +44,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextDate"
         app:layout_constraintVertical_bias="0.228"
-        tools:layout_editor_absoluteX="1dp" />
+        tools:layout_editor_absoluteX="1dp" >
+
+
+    </ListView>
 
     <Button
         android:id="@+id/pageBtn"
@@ -49,11 +59,5 @@
         app:layout_constraintVertical_bias="0.552"
         tools:layout_editor_absoluteX="32dp" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView2"
-        android:name="com.example.akfk_fitorf.ui.fts.FtsDetailFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="294dp"
-        tools:layout_editor_absoluteY="651dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

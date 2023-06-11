@@ -1,16 +1,21 @@
 package com.example.akfk_fitorf.ui.fts
 
 import android.R
+import android.app.AlertDialog
+import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
@@ -57,6 +62,8 @@ class FtsFragment : Fragment() {
         val dateTo : EditText = binding.editTextDate2
         dateTo.setText(date_to)
 
+        var detail : TextView = binding.textView3
+
         var mListView: ListView = binding.ftsList
         var page: Button = binding.pageBtn
         var step: Int = 1
@@ -86,14 +93,12 @@ class FtsFragment : Fragment() {
                         mListView.setOnItemClickListener { parent, view, position, id ->
 
                             println(prettyJson.asJsonArray[id.toInt()])
-
-                            val fragment: FragmentContainerView = binding.fragmentContainerView2
-
-                            val d = FtsDetailFragment()
-                            val b = Bundle()
-                            b.putInt("KEY1",1)
-                            d.arguments = b
-                            d.show(fragment, FtsDetailFragment.TAG)
+                            mListView.visibility = View.INVISIBLE
+                            detail.visibility = View.VISIBLE
+                            page.visibility = View.INVISIBLE
+                            dateFrom.visibility = View.INVISIBLE
+                            dateTo.visibility = View.INVISIBLE
+                            detail.text = prettyJson.asJsonArray[id.toInt()].toString()
                         }
 
                     }
