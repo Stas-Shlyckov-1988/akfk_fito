@@ -13,6 +13,9 @@ import android.widget.EditText
 import android.widget.ListView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.example.akfk_fitorf.databinding.FragmentFtsBinding
 import com.google.gson.JsonParser
 import kotlinx.coroutines.Dispatchers
@@ -82,7 +85,15 @@ class FtsFragment : Fragment() {
 
                         mListView.setOnItemClickListener { parent, view, position, id ->
 
-                           println(prettyJson.asJsonArray[id.toInt()])
+                            println(prettyJson.asJsonArray[id.toInt()])
+
+                            val fragment: FragmentContainerView = binding.fragmentContainerView2
+
+                            val d = FtsDetailFragment()
+                            val b = Bundle()
+                            b.putInt("KEY1",1)
+                            d.arguments = b
+                            d.show(fragment, FtsDetailFragment.TAG)
                         }
 
                     }

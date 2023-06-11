@@ -48,4 +48,12 @@
         app:layout_constraintTop_toBottomOf="@+id/ftsList"
         app:layout_constraintVertical_bias="0.552"
         tools:layout_editor_absoluteX="32dp" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView2"
+        android:name="com.example.akfk_fitorf.ui.fts.FtsDetailFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="294dp"
+        tools:layout_editor_absoluteY="651dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
