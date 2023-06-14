@@ -18,9 +18,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainerView
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.akfk_fitorf.databinding.FragmentFtsBinding
 import com.google.gson.JsonParser
 import kotlinx.coroutines.Dispatchers
@@ -62,7 +61,7 @@ class FtsFragment : Fragment() {
         val dateTo : EditText = binding.editTextDate2
         dateTo.setText(date_to)
 
-        var detail : TextView = binding.textView3
+        var detail: TextView = binding.textView3
 
         var mListView: ListView = binding.ftsList
         var page: Button = binding.pageBtn
@@ -92,13 +91,23 @@ class FtsFragment : Fragment() {
 
                         mListView.setOnItemClickListener { parent, view, position, id ->
 
-                            println(prettyJson.asJsonArray[id.toInt()])
                             mListView.visibility = View.INVISIBLE
                             detail.visibility = View.VISIBLE
                             page.visibility = View.INVISIBLE
                             dateFrom.visibility = View.INVISIBLE
                             dateTo.visibility = View.INVISIBLE
-                            detail.text = prettyJson.asJsonArray[id.toInt()].toString()
+
+                            var info : String = ""
+                            info = "Номер акта: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("akt_num").toString() + "\n"
+                            info += "Регистрация: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("cert_date").toString() + "\n"
+                            info += "Сертификат: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("cert_num").toString() + "\n"
+                            info += "Машина: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("transp_num").toString() + "\n"
+                            info += "Документ на перевозку: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("transp_doc").toString() + "\n"
+                            info += "Экспортер: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("exporter").toString() + "\n"
+                            info += "Импортер: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("importer").toString() + "\n"
+                            info += "ФТС: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("fts").toString() + "\n"
+                            detail.text = info
+
                         }
 
                     }
