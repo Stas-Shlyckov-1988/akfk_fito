@@ -55,6 +55,8 @@ class MaterialFragment : Fragment() {
         val dateTo : EditText = binding.editTextDate4
         dateTo.setText(date_to)
 
+        val informer: TextView = binding.informer
+
         val materialList: ListView = binding.materialList
         val pageBtn: Button = binding.nextBtn
         var step: Int = 1
@@ -80,6 +82,23 @@ class MaterialFragment : Fragment() {
                         }
                         val adapter = ArrayAdapter(requireActivity(), R.layout.simple_list_item_1, dataItems)
                         materialList.adapter = adapter
+                        materialList.setOnItemClickListener { parent, view, position, id ->
+                            dateFrom.visibility = View.INVISIBLE
+                            dateTo.visibility = View.INVISIBLE
+                            pageBtn.visibility = View.INVISIBLE
+                            materialList.visibility = View.INVISIBLE
+
+                            informer.visibility = View.VISIBLE
+                            var detailMaterial: String = ""
+                            detailMaterial += "Питомник: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("pitomnik").toString() + "\n"
+                            detailMaterial += "Документ: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("data_doc").toString() + "\n"
+                            detailMaterial += "Государство: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("origin_country").toString() + "\n"
+                            detailMaterial += "Отгрузка: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("mesto_otgruzki").toString() + "\n"
+                            detailMaterial += "Уч. вед.: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("uch_ved").toString() + "\n"
+                            detailMaterial += "Пункт пропуска: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("punkt_propusk").toString() + "\n"
+                            informer.text = detailMaterial
+
+                        }
 
                     }
                 } else {
