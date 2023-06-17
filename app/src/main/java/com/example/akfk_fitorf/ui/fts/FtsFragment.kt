@@ -1,25 +1,19 @@
 package com.example.akfk_fitorf.ui.fts
 
 import android.R
-import android.app.AlertDialog
-import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.example.akfk_fitorf.databinding.FragmentFtsBinding
 import com.google.gson.JsonParser
 import kotlinx.coroutines.Dispatchers
@@ -47,6 +41,7 @@ class FtsFragment : Fragment() {
     ): View {
         _binding = FragmentFtsBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        val thisFts = this
 
         val c = Calendar.getInstance()
         val sdf = SimpleDateFormat("yyyy-MM-dd")
@@ -67,6 +62,14 @@ class FtsFragment : Fragment() {
         var page: Button = binding.pageBtn
         var step: Int = 1
         page.setOnClickListener {
+            if (page.text == "назад") {
+                mListView.visibility = View.VISIBLE
+                detail.visibility = View.INVISIBLE
+                page.text = "Вперед"
+                dateFrom.visibility = View.VISIBLE
+                dateTo.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
             val dataItems = arrayListOf<String>()
             GlobalScope.launch(Dispatchers.IO) {
                 val url = URL("https://akfk.fitorf.ru/api/fts?date_from=" + dateFrom.text + "&date_to=" + dateTo.text + "&page=" + step)
@@ -93,20 +96,11 @@ class FtsFragment : Fragment() {
 
                             mListView.visibility = View.INVISIBLE
                             detail.visibility = View.VISIBLE
-                            page.visibility = View.INVISIBLE
+                            page.text = "назад"
                             dateFrom.visibility = View.INVISIBLE
                             dateTo.visibility = View.INVISIBLE
 
-                            var info : String = ""
-                            info = "Номер акта: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("akt_num").toString() + "\n"
-                            info += "Регистрация: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("cert_date").toString() + "\n"
-                            info += "Сертификат: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("cert_num").toString() + "\n"
-                            info += "Машина: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("transp_num").toString() + "\n"
-                            info += "Документ на перевозку: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("transp_doc").toString() + "\n"
-                            info += "Экспортер: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("exporter").toString() + "\n"
-                            info += "Импортер: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("importer").toString() + "\n"
-                            info += "ФТС: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("fts").toString() + "\n"
-                            detail.text = info
+                            thisFts.getFtsInfo(prettyJson.asJsonArray[id.toInt()].asJsonObject.get("id").toString(), detail)
 
                         }
 
@@ -126,6 +120,42 @@ class FtsFragment : Fragment() {
         page.callOnClick()
 
         return root
+    }
+    fun getFtsInfo(id: String, detail: TextView) {
+        var data: String = ""
+        GlobalScope.launch(Dispatchers.IO) {
+            val url = URL("https://akfk.fitorf.ru/api/fts/" + id)
+            val httpURLConnection = url.openConnection() as HttpURLConnection
+            httpURLConnection.setRequestProperty("Accept", "application/json") // The format of response we want to get from the server
+            httpURLConnection.requestMethod = "GET"
+            httpURLConnection.doInput = true
+            httpURLConnection.doOutput = false
+            // Check if the connection is successful
+            val responseCode = httpURLConnection.responseCode
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                val response = httpURLConnection.inputStream.bufferedReader()
+                    .use { it.readText() }  // defaults to UTF-8
+                withContext(Dispatchers.Main) {
+
+                    // Convert raw JSON to pretty JSON using GSON library
+                    val prettyJson = JsonParser.parseString(response)
+                    data += "Дата: " + prettyJson.asJsonObject.get("date").toString() + "\n"
+                    data += "Тип досмотра: " + prettyJson.asJsonObject.get("tip_dosmotra").asJsonObject.get("name").toString() + "\n\n"
+                    data += "Экспортер: " + prettyJson.asJsonObject.get("exporter_fts").toString() + "\n"
+                    data += "Экспортер адрес: " + prettyJson.asJsonObject.get("exporter_address_fts").toString() + "\n\n"
+                    data += "Импортер: " + prettyJson.asJsonObject.get("importer_fts").toString() + "\n"
+                    data += "Импортер адрес: " + prettyJson.asJsonObject.get("importer_address_fts").toString() + "\n\n"
+                    data += "Номер транспорта: " + prettyJson.asJsonObject.get("transp_num").toString() + "\n"
+                    data += "Номер документа транспорта: " + prettyJson.asJsonObject.get("transp_doc_num").toString() + "\n"
+                    data += "Дата документа транспорта: " + prettyJson.asJsonObject.get("transp_doc_date").toString() + "\n"
+
+                    detail.text = data
+
+                }
+            } else {
+                Log.e("HTTPURLCONNECTION_ERROR", responseCode.toString())
+            }
+        }
     }
 
     override fun onDestroyView() {
