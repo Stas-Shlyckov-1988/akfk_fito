@@ -124,8 +124,20 @@ class SurFragment : Fragment() {
                     data += "Страна: " + obj.get("c_name").toString() + "\n"
                     data += "Базовый риск: " + obj.get("basic_risk").toString() + "\n"
                     data += "Индекс риск: " + obj.get("index_risk").toString() + "\n"
-                    data += "Запрет ввоза: " + obj.get("vvoz_zapr").toString() + "\n"
-                    data += "Большой риск: " + obj.get("high_risk").toString() + "\n\n"
+                    when (prettyJson.asJsonObject.get("vvoz_zapr").toString()) {
+                        "false" -> data += "Запрет ввоза: нет\n"
+                        "true" -> data += "Запрет ввоза: да\n"
+                        else -> { // Note the block
+                            data += "Запрет ввоза: неуказано\n"
+                        }
+                    }
+                    when (prettyJson.asJsonObject.get("high_risk").toString()) {
+                        "false" -> data += "Большой риск: нет\n\n"
+                        "true" -> data += "Большой риск: да\n\n"
+                        else -> { // Note the block
+                            data += "Большой риск: неуказано\n\n"
+                        }
+                    }
 
                     data += "Зима: " + prettyJson.asJsonObject.get("zima").toString() + "\n"
                     data += "Весна: " + prettyJson.asJsonObject.get("vesna").toString() + "\n"
