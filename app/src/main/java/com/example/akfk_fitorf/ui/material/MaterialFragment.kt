@@ -14,6 +14,7 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.whenCreated
 import com.example.akfk_fitorf.databinding.FragmentMaterialBinding
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -154,12 +155,36 @@ class MaterialFragment : Fragment() {
                     data += "Phone: " + prettyJson.asJsonObject.get("zayavitel").asJsonObject.get("phone").toString() + "\n"
                     data += "Inn: " + prettyJson.asJsonObject.get("zayavitel").asJsonObject.get("inn").toString() + "\n\n"
 
-                    data += "Место посева: " + prettyJson.asJsonObject.get("mesto_poseva").toString() + "\n"
-                    data += "Контакт: " + prettyJson.asJsonObject.get("contract").toString() + "\n"
-                    data += "План завоза: " + prettyJson.asJsonObject.get("plan_zavoza").toString() + "\n"
-                    data += "Номер контакта: " + prettyJson.asJsonObject.get("contract_num").toString() + "\n"
-                    data += "Дата контакта: " + prettyJson.asJsonObject.get("contract_date").toString() + "\n"
-                    data += "Номер план завоза: " + prettyJson.asJsonObject.get("plan_zavoza_date").toString() + "\n"
+                    if (prettyJson.asJsonObject.get("mesto_poseva").toString() == "null")
+                        data += "Место посева: неуказано\n"
+                    else
+                        data += "Место посева: " + prettyJson.asJsonObject.get("mesto_poseva").toString() + "\n"
+                    when (prettyJson.asJsonObject.get("contract").toString()) {
+                        "false" -> data += "Контакт: нет\n"
+                        "true" -> data += "Контакт: да\n"
+                        else -> { // Note the block
+                            data += "Контакт: неуказано\n"
+                        }
+                    }
+                    when (prettyJson.asJsonObject.get("plan_zavoza").toString()) {
+                        "false" -> data += "План завоза: нет\n"
+                        "true" -> data += "План завоза: да\n"
+                        else -> { // Note the block
+                            data += "План завоза: неуказано\n"
+                        }
+                    }
+                    if (prettyJson.asJsonObject.get("contract_date").toString() == "null")
+                        data += "Номер контакта: неуказано\n"
+                    else
+                        data += "Номер контакта: " + prettyJson.asJsonObject.get("contract_num").toString() + "\n"
+                    if (prettyJson.asJsonObject.get("contract_date").toString() == "null")
+                        data += "Дата контакта: неуказано\n"
+                    else
+                        data += "Дата контакта: " + prettyJson.asJsonObject.get("contract_date").toString() + "\n"
+                    if (prettyJson.asJsonObject.get("plan_zavoza_date").toString() == "null")
+                        data += "Номер план завоза: неуказано\n"
+                    else
+                        data += "Номер план завоза: " + prettyJson.asJsonObject.get("plan_zavoza_date").toString() + "\n"
                     data += "Статус: " + prettyJson.asJsonObject.get("status").toString() + "\n"
 
                     detail.text = data
