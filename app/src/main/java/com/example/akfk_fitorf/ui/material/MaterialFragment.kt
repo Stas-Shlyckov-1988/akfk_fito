@@ -152,8 +152,8 @@ class MaterialFragment : Fragment() {
                     data += "Заявитель \n"
                     data += "Имя: " + prettyJson.asJsonObject.get("zayavitel").asJsonObject.get("name").toString() + "\n"
                     data += "Email: " + prettyJson.asJsonObject.get("zayavitel").asJsonObject.get("email").toString() + "\n"
-                    data += "Phone: " + prettyJson.asJsonObject.get("zayavitel").asJsonObject.get("phone").toString() + "\n"
-                    data += "Inn: " + prettyJson.asJsonObject.get("zayavitel").asJsonObject.get("inn").toString() + "\n\n"
+                    data += "Телефон: " + prettyJson.asJsonObject.get("zayavitel").asJsonObject.get("phone").toString() + "\n"
+                    data += "ИНН: " + prettyJson.asJsonObject.get("zayavitel").asJsonObject.get("inn").toString() + "\n\n"
 
                     if (prettyJson.asJsonObject.get("mesto_poseva").toString() == "null")
                         data += "Место посева: неуказано\n"
