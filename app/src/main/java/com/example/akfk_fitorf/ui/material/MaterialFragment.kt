@@ -41,6 +41,7 @@ class MaterialFragment : Fragment() {
     ): View {
         _binding = FragmentMaterialBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        var thisMaterial = this
 
         val c = Calendar.getInstance()
         val sdf = SimpleDateFormat("yyyy-MM-dd")
@@ -61,6 +62,15 @@ class MaterialFragment : Fragment() {
         val pageBtn: Button = binding.nextBtn
         var step: Int = 1
         pageBtn.setOnClickListener {
+            if (pageBtn.text == "назад") {
+                materialList.visibility = View.VISIBLE
+                informer.visibility = View.INVISIBLE
+                pageBtn.visibility = View.VISIBLE
+                pageBtn.text = "Вперед"
+                dateFrom.visibility = View.VISIBLE
+                dateTo.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
             val dataItems = arrayListOf<String>()
             GlobalScope.launch(Dispatchers.IO) {
                 val url = URL("https://akfk.fitorf.ru/api/obrashchenie_insp?sort=&date_from=" + dateFrom.text + "&date_to=" + dateTo.text + "&page=" + step)
@@ -85,18 +95,12 @@ class MaterialFragment : Fragment() {
                         materialList.setOnItemClickListener { parent, view, position, id ->
                             dateFrom.visibility = View.INVISIBLE
                             dateTo.visibility = View.INVISIBLE
-                            pageBtn.visibility = View.INVISIBLE
+                            pageBtn.text = "назад"
                             materialList.visibility = View.INVISIBLE
 
                             informer.visibility = View.VISIBLE
-                            var detailMaterial: String = ""
-                            detailMaterial += "Питомник: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("pitomnik").toString() + "\n"
-                            detailMaterial += "Документ: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("data_doc").toString() + "\n"
-                            detailMaterial += "Государство: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("origin_country").toString() + "\n"
-                            detailMaterial += "Отгрузка: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("mesto_otgruzki").toString() + "\n"
-                            detailMaterial += "Уч. вед.: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("uch_ved").toString() + "\n"
-                            detailMaterial += "Пункт пропуска: " + prettyJson.asJsonArray[id.toInt()].asJsonObject.get("punkt_propusk").toString() + "\n"
-                            informer.text = detailMaterial
+                            thisMaterial.getMaterialInfo(prettyJson.asJsonArray[id.toInt()].asJsonObject.get("id").toString(), informer)
+                            //informer.text = detailMaterial
 
                         }
 
@@ -115,6 +119,48 @@ class MaterialFragment : Fragment() {
         pageBtn.callOnClick()
 
         return root
+    }
+
+    fun getMaterialInfo(id: String, detail: TextView) {
+        var data: String = ""
+        GlobalScope.launch(Dispatchers.IO) {
+            val url = URL("https://akfk.fitorf.ru/api/obrashchenie_ca/" + id)
+            val httpURLConnection = url.openConnection() as HttpURLConnection
+            httpURLConnection.setRequestProperty("Accept", "application/json") // The format of response we want to get from the server
+            httpURLConnection.requestMethod = "GET"
+            httpURLConnection.doInput = true
+            httpURLConnection.doOutput = false
+            // Check if the connection is successful
+            val responseCode = httpURLConnection.responseCode
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                val response = httpURLConnection.inputStream.bufferedReader()
+                    .use { it.readText() }  // defaults to UTF-8
+                withContext(Dispatchers.Main) {
+
+                    // Convert raw JSON to pretty JSON using GSON library
+                    val prettyJson = JsonParser.parseString(response)
+                    data += "Дата: " + prettyJson.asJsonObject.get("date").toString() + "\n\n"
+                    data += "Заявитель \n"
+                    data += "Имя: " + prettyJson.asJsonObject.get("zayavitel").asJsonObject.get("name").toString() + "\n"
+                    data += "Email: " + prettyJson.asJsonObject.get("zayavitel").asJsonObject.get("email").toString() + "\n"
+                    data += "Phone: " + prettyJson.asJsonObject.get("zayavitel").asJsonObject.get("phone").toString() + "\n"
+                    data += "Inn: " + prettyJson.asJsonObject.get("zayavitel").asJsonObject.get("inn").toString() + "\n\n"
+
+                    data += "Место посева: " + prettyJson.asJsonObject.get("mesto_poseva").toString() + "\n"
+                    data += "Контакт: " + prettyJson.asJsonObject.get("contract").toString() + "\n"
+                    data += "План завоза: " + prettyJson.asJsonObject.get("plan_zavoza").toString() + "\n"
+                    data += "Номер контакта: " + prettyJson.asJsonObject.get("contract_num").toString() + "\n"
+                    data += "Дата контакта: " + prettyJson.asJsonObject.get("contract_date").toString() + "\n"
+                    data += "Номер план завоза: " + prettyJson.asJsonObject.get("plan_zavoza_date").toString() + "\n"
+                    data += "Статус: " + prettyJson.asJsonObject.get("status").toString() + "\n"
+
+                    detail.text = data
+
+                }
+            } else {
+                Log.e("HTTPURLCONNECTION_ERROR", responseCode.toString())
+            }
+        }
     }
 
     override fun onDestroyView() {
