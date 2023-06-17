@@ -7,11 +7,15 @@
         <item
             android:id="@+id/nav_fts"
             android:icon="@drawable/icon"
-            android:title="@string/menu_home" />
+            android:title="@string/menu_fts" />
         <item
             android:id="@+id/nav_material"
             android:icon="@drawable/icon"
-            android:title="@string/menu_gallery" />
+            android:title="@string/menu_material" />
+        <item
+            android:id="@+id/nav_sur"
+            android:icon="@drawable/icon"
+            android:title="@string/menu_sur" />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/icon"

@@ -8,14 +8,20 @@
     <fragment
         android:id="@+id/nav_fts"
         android:name="com.example.akfk_fitorf.ui.fts.FtsFragment"
-        android:label="@string/menu_home"
+        android:label="@string/menu_fts"
         tools:layout="@layout/fragment_fts" />
 
     <fragment
         android:id="@+id/nav_material"
         android:name="com.example.akfk_fitorf.ui.material.MaterialFragment"
-        android:label="@string/menu_gallery"
+        android:label="@string/menu_material"
         tools:layout="@layout/fragment_material" />
+
+    <fragment
+        android:id="@+id/nav_sur"
+        android:name="com.example.akfk_fitorf.ui.material.SurFragment"
+        android:label="@string/menu_sur"
+        tools:layout="@layout/fragment_sur" />
 
     <fragment
         android:id="@+id/nav_slideshow"
