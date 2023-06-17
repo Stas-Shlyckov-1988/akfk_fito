@@ -43,12 +43,12 @@ class SurFragment : Fragment() {
 
         val informer: TextView = binding.informer
 
-        val materialList: ListView = binding.materialList
+        val surlList: ListView = binding.surlList
         val pageBtn: Button = binding.nextBtn
         var step: Int = 1
         pageBtn.setOnClickListener {
             if (pageBtn.text == "назад") {
-                materialList.visibility = View.VISIBLE
+                surlList.visibility = View.VISIBLE
                 informer.visibility = View.INVISIBLE
                 pageBtn.visibility = View.VISIBLE
                 pageBtn.text = "Вперед"
@@ -56,7 +56,7 @@ class SurFragment : Fragment() {
             }
             val dataItems = arrayListOf<String>()
             GlobalScope.launch(Dispatchers.IO) {
-                val url = URL("http://192.168.1.125/api/sur/list?page=" + step)
+                val url = URL("https://akfk.fitorf.ru/api/sur/list?page=" + step)
                 val httpURLConnection = url.openConnection() as HttpURLConnection
                 httpURLConnection.setRequestProperty("Accept", "application/json") // The format of response we want to get from the server
                 httpURLConnection.requestMethod = "GET"
@@ -74,10 +74,10 @@ class SurFragment : Fragment() {
                             dataItems.add(obj.asJsonObject.get("c_name").toString())
                         }
                         val adapter = ArrayAdapter(requireActivity(), R.layout.simple_list_item_1, dataItems)
-                        materialList.adapter = adapter
-                        materialList.setOnItemClickListener { parent, view, position, id ->
+                        surlList.adapter = adapter
+                        surlList.setOnItemClickListener { parent, view, position, id ->
                             pageBtn.text = "назад"
-                            materialList.visibility = View.INVISIBLE
+                            surlList.visibility = View.INVISIBLE
 
                             informer.visibility = View.VISIBLE
                             thisSur.getSurInfo(prettyJson.asJsonArray[id.toInt()].asJsonObject, informer)
@@ -105,7 +105,7 @@ class SurFragment : Fragment() {
     fun getSurInfo(obj: JsonObject, detail: TextView) {
         var data: String = ""
         GlobalScope.launch(Dispatchers.IO) {
-            val url = URL("http://192.168.1.125/api/sur/" + obj.get("id").toString())
+            val url = URL("https://akfk.fitorf.ru/api/sur/" + obj.get("id").toString())
             val httpURLConnection = url.openConnection() as HttpURLConnection
             httpURLConnection.setRequestProperty("Accept", "application/json") // The format of response we want to get from the server
             httpURLConnection.requestMethod = "GET"
