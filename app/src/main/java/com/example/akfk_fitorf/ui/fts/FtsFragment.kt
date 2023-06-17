@@ -87,7 +87,7 @@ class FtsFragment : Fragment() {
 
                         val prettyJson = JsonParser.parseString(response)
                         for (obj in prettyJson.asJsonArray) {
-                            dataItems.add(obj.asJsonObject.get("akt_num").toString())
+                            dataItems.add(obj.asJsonObject.get("transp_doc").toString())
                         }
                         val adapter = ArrayAdapter(requireActivity(), R.layout.simple_list_item_1, dataItems)
                         mListView.adapter = adapter
