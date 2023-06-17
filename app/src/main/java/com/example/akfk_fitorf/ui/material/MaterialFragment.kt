@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.example.akfk_fitorf.databinding.FragmentMaterialBinding
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -99,8 +100,8 @@ class MaterialFragment : Fragment() {
                             materialList.visibility = View.INVISIBLE
 
                             informer.visibility = View.VISIBLE
-                            thisMaterial.getMaterialInfo(prettyJson.asJsonArray[id.toInt()].asJsonObject.get("id").toString(), informer)
-                            //informer.text = detailMaterial
+                            thisMaterial.getMaterialInfo(prettyJson.asJsonArray[id.toInt()].asJsonObject, informer)
+
 
                         }
 
@@ -121,10 +122,10 @@ class MaterialFragment : Fragment() {
         return root
     }
 
-    fun getMaterialInfo(id: String, detail: TextView) {
+    fun getMaterialInfo(obj: JsonObject, detail: TextView) {
         var data: String = ""
         GlobalScope.launch(Dispatchers.IO) {
-            val url = URL("https://akfk.fitorf.ru/api/obrashchenie_ca/" + id)
+            val url = URL("https://akfk.fitorf.ru/api/obrashchenie_ca/" + obj.get("id").toString())
             val httpURLConnection = url.openConnection() as HttpURLConnection
             httpURLConnection.setRequestProperty("Accept", "application/json") // The format of response we want to get from the server
             httpURLConnection.requestMethod = "GET"
@@ -139,6 +140,13 @@ class MaterialFragment : Fragment() {
 
                     // Convert raw JSON to pretty JSON using GSON library
                     val prettyJson = JsonParser.parseString(response)
+                    data += "Питомник: " + obj.get("pitomnik").toString() + "\n"
+                    data += "Страна: " + obj.get("dep_country").toString() + "\n"
+                    data += "Место отгрузки: " + obj.get("mesto_otgruzki").toString() + "\n"
+                    data += "Пункт пропуска: " + obj.get("punkt_propusk").toString() + "\n"
+                    data += "Место оформления: " + obj.get("mesto_oforml").toString() + "\n\n"
+
+
                     data += "Дата: " + prettyJson.asJsonObject.get("date").toString() + "\n\n"
                     data += "Заявитель \n"
                     data += "Имя: " + prettyJson.asJsonObject.get("zayavitel").asJsonObject.get("name").toString() + "\n"
