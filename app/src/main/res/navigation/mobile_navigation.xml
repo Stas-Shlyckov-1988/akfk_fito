@@ -28,4 +28,10 @@
         android:name="com.example.akfk_fitorf.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_fts_detail"
+        android:name="com.example.akfk_fitorf.ui.fts.FtsDetailFragment"
+        android:label="@string/menu_slideshow"
+        tools:layout="@layout/fragment_fts_detail" />
 </navigation>

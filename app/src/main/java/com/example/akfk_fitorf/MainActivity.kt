@@ -11,6 +11,10 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.findFragment
+import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
+import androidx.navigation.get
 import com.example.akfk_fitorf.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -26,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
+
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -38,6 +43,10 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        binding.appBarMain.fab.setOnClickListener {
+            //println(navController.context)
+            navController.navigate(R.id.nav_fts_detail)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
