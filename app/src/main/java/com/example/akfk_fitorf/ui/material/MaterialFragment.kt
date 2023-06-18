@@ -90,7 +90,7 @@ class MaterialFragment : Fragment() {
 
                         val prettyJson = JsonParser.parseString(response)
                         for (obj in prettyJson.asJsonArray) {
-                            dataItems.add(obj.asJsonObject.get("pitomnik").toString())
+                            dataItems.add(obj.asJsonObject.get("mesto_oforml").toString() + "\n" + obj.asJsonObject.get("pitomnik").toString())
                         }
                         val adapter = ArrayAdapter(requireActivity(), R.layout.simple_list_item_1, dataItems)
                         materialList.adapter = adapter

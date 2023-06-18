@@ -71,7 +71,7 @@ class SurFragment : Fragment() {
 
                         val prettyJson = JsonParser.parseString(response)
                         for (obj in prettyJson.asJsonArray) {
-                            dataItems.add(obj.asJsonObject.get("c_name").toString())
+                            dataItems.add(obj.asJsonObject.get("c_name").toString() + "\n" + obj.asJsonObject.get("p_name").toString())
                         }
                         val adapter = ArrayAdapter(requireActivity(), R.layout.simple_list_item_1, dataItems)
                         surlList.adapter = adapter
