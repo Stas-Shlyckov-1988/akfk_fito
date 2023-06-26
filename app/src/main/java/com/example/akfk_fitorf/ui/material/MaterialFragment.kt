@@ -126,7 +126,7 @@ class MaterialFragment : Fragment() {
     fun getMaterialInfo(obj: JsonObject, detail: TextView) {
         var data: String = ""
         GlobalScope.launch(Dispatchers.IO) {
-            val url = URL("https://akfk.fitorf.ru/api/obrashchenie_ca/" + obj.get("id").toString())
+            val url = URL("https://akfk.fitorf.ru/akfk/api/obrashchenie_ca/" + obj.get("id").toString())
             val httpURLConnection = url.openConnection() as HttpURLConnection
             httpURLConnection.setRequestProperty("Accept", "application/json") // The format of response we want to get from the server
             httpURLConnection.requestMethod = "GET"
